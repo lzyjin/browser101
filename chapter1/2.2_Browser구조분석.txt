@@ -1,0 +1,39 @@
+브라우저에서 웹페이지를 열면 Window라는 전체적인 object가 존재하고,
+Window는 브라우저에서 열려있는 전체적인 창을 의미한다.
+
+그리고 Window안에 웹페이지가 표시되는 부분이 Document object다.
+
+그리고 사용자 눈에는 보이지 않지만 Window에 관련된 정보를 가지는 Navigator라는 object도 있다.
+
+
+브라우저에서 웹페이지를 열면 Window 안에는
+DOM(document object model),
+BOM(browser object model - navigator, location, fetch, storage, ... Web APIs들),
+JavaScript(Array, Map, Date, ...우리가 작성한 자바스크립트)가 있다.
+
+그래서 우리는 브라우저 위에서 동작하는 사이트를 만들 때 window, dom, bom과 연관된 API들을 사용할 수 있는 것이다.
+
+크롬 개발자도구를 열어 콘솔창에 console.log(window);라고 쳐서 window 객체가 가진 것들을 보자.
+mdn에도 자세히 나와있다.
+
+
+
+브라우저에서 window는 최고의 object다. 글로벌 object다.
+그래서 콘솔창에 console.log(this); 라고 치면 window객체가 나온다.
+그래서 console.log(innerWidth);라고 치면 윈도우의 너비가 바로 나오는 것이다.
+console.log(innerWidth); 는 console.log(window.innerWidth);라고 치는 것과 같다.
+
+예시로 alert('hello'); 라고 치면 알림창이 뜨고,
+prompt('please enter your name'); 이라고 치면 입력받는 창이 뜬다.
+
+이렇게 브라우저는 우리가 이용할 수 있는 다양한 api를 제공하고, 우리는 그 api를 호출하여 사용해서
+브라우저에 있는 다양한 기능을 쓸 수 있다.
+
+
+window에는 navigator라는 브라우저에 대한 유용한 정보를 담고 있는 객체가 있다.
+크롬 콘솔창에 window.navigator 또는 navigator라고 치면 볼 수 있다.
+
+
+window는 글로벌 오브젝트라서 그리고 window 안에는 dom, bom, javascript가 있지만,
+window 그 자체로도 많이 쓰는데 어떤거에 쓰냐면 주로
+window의 size를 잴 때나 감지할 때나, window의 scroll을 감지할 때나, 웹페이지가 load되었는지 아닌지(브라우저에 올라왔는지 아닌지)를 알아볼 때 많이 사용한다.

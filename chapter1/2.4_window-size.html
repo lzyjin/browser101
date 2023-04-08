@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>실습1. 윈도우 사이즈 표기</title>
+    <style>
+        .tag {
+            background-color: pink;
+            display: inline-block;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tag">
+
+    </div>
+
+    <script>
+        (function () {
+            // 얘는 한번만 선언되도록 resize 이벤트 리스너 밖에 있는게 좋다.
+            const tag = document.querySelector('.tag');
+
+            function updateTag(elem) {
+                elem.innerHTML = `window.screen: ${window.screen.width}, ${window.screen.height}<br>
+                                    window.outer: ${window.outerWidth}, ${window.outerHeight}<br>
+                                    window.inner: ${window.innerWidth}, ${window.innerHeight}<br>
+                                    documentElement.clientWidth: ${document.documentElement.clientWidth}, ${document.documentElement.clientHeight}`;
+            }
+            updateTag(tag);
+            window.addEventListener('resize', () => {
+                updateTag(tag);
+            })
+
+            // 나는 innerWidth가 outerWidth보다 더 컸던 이유:
+            // 크롭 브라우저가 90%로 축소되어있었다. 이런 경우 innerWidth > outerWidth일 수 있다.
+            // 이유는 innerWidth는 윈도우의 viewport 너비에 바인딩되고, outerWidth는 브라우저 창 너비에 바인딩되기 때문이다.
+            // https://stackoverflow.com/questions/22468878/innerwidth-and-outerwidth-oddness-on-desktop
+        })();
+    </script>
+</body>
+</html>
