@@ -1,0 +1,40 @@
+coordinates 좌표
+
+
+브라우저에는 x축과 y축이 있다.
+x축은 수평축, y축은 수직축.
+브라우저 document 부분의 제일 상단 왼쪽이 좌표가  0, 0이다.
+좌표는 (x축값, y축값)
+
+
+Element.getBoundingClientRect()
+Element는 dom의 모든 요소들(태그들)이 element이기 때문에
+그 모든 태그들에는 getBoundingClientRect() 함수가 있어서 사용할 수 있다.
+
+getBoundingClientRect 함수를 호출하면 요소의 크기(width, height)를 알 수 있고,
+위치(left, top) 등을 알 수 있다.
+left는 브라우저 왼쪽에서부터의 위치, 즉 x좌표이고
+top은 브라우저 상단에서부터의 위치, 즉 y좌표이다.
+
+right와 bottom도 알 수 있는데 이게 헷갈리기 쉽다.
+css의 position값인 right와 bottom과 달리,
+getBoundingClientRect의 right은 브라우저의 왼쪽부터 요소의 제일 오른쪽까지의 거리,
+bottom은 브라우저의 상단부터 요소의 제일 아래까지의 거리이다.
+
+그래서 css는 left와 top은 왼쪽과 상단부터, right과 bottom은 오른쪽과 하단부터
+js는 항상! 왼쪽 상단으로부터 좌표를 계산한다는 것을 기억하자.
+
+
+Client x,y VS Page x,y
+헷갈릴 수 있는 이 두개에 대해 정확히 짚고 넘어가자.
+
+사용자가 어느정도 스크롤한 상태라고 가정한다.
+사용자가 문서 안에서 클릭을 했을 때 클릭 이벤트가 발생한다.
+그 클릭 이벤트 안에 있는 x, y값과 page의 x, y값이 다르다.
+
+client x와 y는 사용자가 보는 페이지에 상관없이 브라우저 window 창에서 얼마나 떨어져 있는지가 전달된다.
+page x와 y는 페이지 자체(문서)에서 떨어져 있는 거리를 나타내기 때문에, y는 보이지않는 저기 맨 위부터, x는 문서 제일 왼쪽부터 재는
+거리이다.
+
+
+

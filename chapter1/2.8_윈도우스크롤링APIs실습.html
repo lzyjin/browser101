@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>윈도우 스크롤링 APIs 실습</title>
+    <style>
+        body {
+            background-color: #000;
+            /* 문서가 윈도우를 벗어나면 보이지 않게 하기 */
+            /* overflow: hidden; */
+        }
+        .box {
+            width: 300px;
+            height: 300px;
+            background-color: #ffd6dd;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .special {
+            background-color: #8bc594;
+        }
+
+        .buttons {
+            position: fixed;
+            right: 10px;
+            top: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- special 박스를 클릭하고, 그 클릭한 지점의 getBoundingRect, client x, y, page x, y 출력하기-->
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box special"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+
+    <aside class="buttons">
+        <button class="scroll-by-100">Scroll by 100px(y)</button>
+        <button class="scroll-to-100">Scroll to 100px(y)</button>
+        <button class="scroll-into-special">Scroll into special</button>
+    </aside>
+
+    <script>
+        const specialBox = document.querySelector('.box.special');
+        const scrollBy = document.querySelector('.scroll-by-100');
+        const scrollTo = document.querySelector('.scroll-to-100');
+        const scrollInto = document.querySelector('.scroll-into-special');
+
+        scrollBy.addEventListener('click', () => {
+            // window.scrollBy(0, 100);
+            // 또는
+            window.scrollBy({
+                top: 100,
+                left: 0,
+                behavior: 'smooth',
+            });
+        });
+
+        scrollTo.addEventListener('click', () => {
+            // window.scrollTo(0, 100);
+            // 또는
+            window.scrollTo({
+                top: 100,
+                left: 0,
+                behavior: 'smooth',
+            });
+        });
+
+        scrollInto.addEventListener('click', () => {
+            // specialBox.scrollIntoView();
+            // 또는
+            specialBox.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                // block: 'center',
+                // block: 'end',
+            });
+        });
+    </script>
+</body>
+</html>

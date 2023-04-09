@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="test.js" defer></script>
+</head>
+<body>
+    <script>
+        // only document(html)
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded');
+        });
+
+        // after resources (css, images, font...)
+        // 모든 리소스가 다운로드 된 후
+        window.addEventListener('load', () => {
+            console.log('load');
+        });
+
+        // defer을 추가하면 콘솔창에 다음과 같은 순서로 출력된다.
+        // js loaded
+        // DOMContentLoaded
+        // load
+
+        // 즉, defer를 쓰면 DOMContentLoaded가 발생하기 이전에 js가 로드되고, 그다음 DOMContentLoaded, laod
+        // 그래서 여러분의 자바스크립트가 리소스(이미지, 폰트, 스타일..)에 대해 무언가를 수행하지 않는 이상 DOMContentLoaded 안에서 동작을 수행하는 것이
+        // 사용자가 조금 더 빠르게 사용자가 문서를 볼 수 있고, defer를 사용하면 DOMContentLoaded가 발생되기 전(즈음)에 비슷한 시점에 로드되므로 좋죠.
+
+
+
+        // 이런것도 있다.
+        // before unload: 페이지가 끝날 때(사용자가 페이지를 나갈 떄)
+        // 새로고침 시 확인 가능
+        window.addEventListener('beforeunload', () => {
+            console.log('beforeunload');
+        });
+
+        // resource is being unloaded
+        window.addEventListener('unload', () => {
+            console.log('unload');
+        });
+
+
+
+        // 결론
+        // load는 모든 리소스가 로드 된 후 발생하는 이벤트
+        // DOMContentLoaded는 html만 로드된 후 발생하는 이벤트
+        // 그래서 페이지 안에 리소스가 많은 경우, DOMContentLoaded가 조금 빨리 발생되고 load는 조금 나중에 발생된다.
+    </script>
+</body>
+</html>
