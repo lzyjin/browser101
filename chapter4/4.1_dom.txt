@@ -1,0 +1,31 @@
+DOM
+Document Object Model
+
+웹페이지를 브라우저에서 열면 브라우저는 html파일을 읽게 된다.
+body, section, img... 이런 태그들을 분석해서 이것들을 node로 변환한다.
+브라우저 자신이 이해할 수 있는 object로 변환하는 것이다.
+HTML의 Tag가 JavaScript의 Node로 변환된다.
+그리고 Node object안에는 HTML 태그 안에 적은 텍스트나 클래스 등 모든 정보들이 포함된다.
+
+Node는 EventTarget을 상속한다.
+Document, Element, Text...는 Node를 상속한다.
+Element에는 HTMLElement, SVGElement ... 등 다양한 종류가 있다.
+HTMLElement 안에는 어떤 태그를 사용하는지에 따라 HTMLInputElement, HTMLDivElement ...
+
+브라우저는 우리가 쓴 HTML을 한 줄 한 줄 읽어서 DOM트리로 변환한다.
+브라우저 자신이 이해할 수 있도록 오브젝트 나무를 만든다.
+
+
+HTML태그에는 그에 상응하는 DOM 요소가 있다.
+
+html(HTMLHtmlElement) - head(HTMLHeadElement) - meta(HTMLMetaElement) ..
+
+html파일을 브라우저에서 읽으면 브라우저도 실행되고 있는 어플리케이션이기 때문에
+어플리케이션이 이해할 수 있는 즉, 메모리에 보관할 수 있는 object로 변환한다.
+
+웹페이지를 브라우저에서 실행하면
+글로벌 object인 window가 있고,
+window안에는 DOM, BOM, JavaScript가 있다.
+DOM안에는 우리가 태그로 작성한 요소들이 나무형태로 들어있다.
+BOM안에는 브라우저에 관련된 object들이 있고,
+JavaScript와 관련된 object들이 있다.
