@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM조작하기</title>
+</head>
+<body>
+  <section>
+    <img src="img/rabbit.png" alt="rabbit">
+    <h1 id="brand">Dream Coding</h1>
+    <h3>Don't forget to code your dream</h3>
+  </section>
+  <span>Hello World!</span>
+</body>
+</html>
+<script>
+    const section = document.querySelector('section');
+    const h2 = document.createElement('h2');
+
+    h2.setAttribute('class', 'title'); // <h2 class="title"></h2>
+    h2.textContent = 'This is a title'; // <h2 class="title">This is a title</h2>
+
+    // section안에 제일 마지막에 추가
+    // append 또는 appendChild 사용 가능
+    // append가 최근에 생긴 api이고, appendChild와 몇가지 차이가 있다.
+    // section.append(h2);
+
+    // h1과 h3의 사이에 추가하고 싶으면
+    const h3 = document.querySelector('h3');
+    section.insertBefore(h2, h3);
+
+    // innerHTML을 사용해 동적으로 DOM 바꾸기
+    // section.innerHTML = '<h1>reset</h1>';
+    // 백틱을 사용하면 줄바꿈도 가능해서 편리함
+    section.innerHTML = `
+        <img src="img/rabbit.png" alt="rabbit">
+        <h1 id="brand">Dream Coding</h1>
+        <h2 class="title">This is a title</h2>
+        <h3>Don't forget to code your dream</h3>
+    `;
+
+    // 부분적인 변경이 일어난다면 textContent로 업데이트 하는게 효율적이다.
+
+    // 변수에 담은 element를 이렇게 삭제할 수 있다.
+    section.removeChild(h2);
+
+    // 그래서 element의 reference(변수)를 가지고 있고, 조금 더 많은 동작을 해야한다면 createElement로 만들어서 사용하는 것이 좋고
+    // 한번 만든 뒤 변경할 일이 없다면 innerHTML을 이용해 동적으로 추가해도 된다.
+</script>

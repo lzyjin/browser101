@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>좌표실습성능개선</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
+
+        .line {
+            position: absolute;
+            background-color: white;
+        }
+
+        .horizontal {
+            width: 100%;
+            height: 1px;
+            transform: translate3d(0, 50%, 0);
+        }
+
+        .vertical {
+            width: 1px;
+            height: 100%;
+            transform: translate3d(50%, 0, 0);
+        }
+
+        .target {
+            position: absolute;
+            transform: translate3d(-50%, -50%, 0);
+        }
+
+        .tag {
+            color: white;
+            position: absolute;
+            transform: translate3d(50%, 50%, 0);
+            font-size: 38px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="line horizontal"></div>
+    <div class="line vertical"></div>
+    <img src="img/target.png" alt="" class="target">
+    <span class="tag">hello</span>
+
+    <script>
+        // target 이미지가 로드된 후에 getBoundingClientRect로 값을 읽어와야 하므로
+        // 이미지 등 모든 리소스가 로드된 후에 감지하도록 addEventListener 추가
+        addEventListener('load', () => {
+            const vertical = document.querySelector('.vertical');
+            const horizontal = document.querySelector('.horizontal');
+            const target = document.querySelector('.target');
+            const tag = document.querySelector('.tag');
+            const targetRect = target.getBoundingClientRect();
+            const targetHalfWidth = targetRect.width / 2;
+            const targetHalfHeight = targetRect.height / 2;
+
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX;
+                const y = e.clientY;
+                console.log(`${x} ${y}`);
+
+                vertical.style.transform = `translate3d(${x}px, 0, 0)`;
+                horizontal.style.transform = `translate3d(0, ${y}px, 0)`;
+
+                target.style.transform = `translate3d(${x - targetHalfWidth}px, ${y - targetHalfHeight}px, 0)`;
+
+                tag.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+                tag.innerHTML = `${x}px, ${y}px`;
+            });
+        });
+
+        // https://www.lmame-geek.com/css-triggers/
+        // css 애니메이션이나 transition을 이용할 때, composite만 일어나는 속성을 쓰자.  -> transform
+        // layout, paint부터 다시 일어나는 속성을 쓰면 성능에 좋지 않으므로. -> top, left
+        // 위 링크에서 속성을 확인하며 사용하자!
+
+        // 성능개선 확인 방법:
+        // 크롬 개발자도구 Performance 탭 -> 레코딩 -> 결과 보기
+        // 이벤트 발생한 구역별로 부분을 좁게 설정해 볼 수 있음
+
+        // 레이아웃 발생 확인 방법:
+        // ctrl(command) + shift + p
+        // 개발툴 팔레트로 이동 가능
+        // >layout이라고 치고 Rendering(Show layout shift regions)를 클릭하면
+        // 이벤트가 발생함에 따라 레이아웃이 어떻게 발생하는지 볼 수 있다.
+    </script>
+</body>
+</html>

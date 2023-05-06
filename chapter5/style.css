@@ -1,0 +1,140 @@
+@font-face {
+    font-family: 'neurimboGothicRegular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/neurimboGothicRegular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    font-family: 'neurimboGothicRegular';
+}
+
+button {
+    border: 1px solid #000;
+    border-radius: 0;
+    outline: none;
+    background-color: #fff;
+    display: inline-block;
+    cursor: pointer;
+    font-family: 'neurimboGothicRegular';
+}
+
+#app {
+    width: 375px;
+    height: 812px;
+    background-color: #fff;
+    position: relative;
+}
+
+#app header {
+    border-bottom: 1px solid #000;
+    height: 70px;
+}
+#app header h1 {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 2rem;
+    font-weight: normal;
+}
+
+#app section {
+    height: calc(100% - 170px);
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+#app section ul {
+    list-style: none;
+}
+
+#app section ul li {
+    list-style: none;
+    position: relative;
+    padding: 15px 10px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #000;
+}
+
+#app section ul li span {
+    display: inline-block;
+    width: calc(100% - 40px);
+}
+
+#app section ul li .btn-li-delete {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translate3d(0, -50%, 0);
+    width: 30px;
+    height: 30px;
+}
+
+#app section ul li .btn-li-delete i {
+    font-size: 1.1rem;
+    color: currentColor;
+}
+
+
+#app section ul li .btn-li-delete:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+
+#app footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    border-top: 1px solid #000;
+}
+
+#app footer .input-wrap {
+    position: relative;
+}
+
+#app footer input {
+    background-color: #dedede;
+    width: 100%;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+    padding: 10px 30px 10px 10px;
+}
+
+#app footer .input-wrap .btn-input-reset {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translate3d(0, -50%, 0);
+    border: none;
+    background-color: transparent;
+    display: none;
+}
+
+#app footer .input-wrap .btn-input-reset.show {
+    display: block;
+}
+
+#app footer .btn-add {
+    display: block;
+    margin: 15px auto 0;
+    padding: 5px 10px;
+    font-size: 1.125rem;
+}
