@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>필수로 알아야 하는 Bubbling & capturing 그리고 꿀팁</title>
+    <style>
+        .outer {
+            background-color: yellow;
+            padding: 100px;
+        }
+
+        .middle {
+            background-color: pink;
+            padding: 100px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer">
+        <div class="middle">
+            <button>Click Me</button>
+        </div>
+    </div>
+
+    <script>
+        const outer = document.querySelector('.outer');
+        const middle = document.querySelector('.middle');
+        const button = document.querySelector('button');
+
+        outer.addEventListener('click', (e) => {
+            if (e.target !== e.currentTarget) {
+                return;
+            }
+
+            console.log(`outer: ${e.currentTarget}, ${e.target}`);
+            console.log(e.currentTarget);
+            console.log(e.target);
+        });
+
+        middle.addEventListener('click', (e) => {
+            if (e.target !== e.currentTarget) {
+                return;
+            }
+
+            console.log(`middle: ${e.currentTarget}, ${e.target}`);
+            console.log(e.currentTarget);
+            console.log(e.target);
+        });
+
+        button.addEventListener('click', (e) => {
+            console.log(`button1: ${e.currentTarget}, ${e.target}`);
+
+            // 캡처링/버블링 해결하기
+            // 현재 이벤트가 캡처링/버블링 단계에서 더이상 전파되지 않도록 방지한다.
+            // https://developer.mozilla.org/ko/docs/Web/API/Event/stopPropagation
+            // e.stopPropagation();
+
+            // 같은 이벤트에 대해 나머지 리스너도 방지하려면
+            // https://developer.mozilla.org/ko/docs/Web/API/Event/stopImmediatePropagation
+            // e.stopImmediatePropagation();
+        });
+
+        button.addEventListener('click', (e) => {
+            console.log(`button2: ${e.currentTarget}, ${e.target}`);
+
+            // 만약 여기서만 이 코드를 작성하면 button1을 출력하는 리스너는 그대로 동작한다.
+            // 코드 순서대로 button1이 먼저 실행됐기 때문에,
+            // stopImmediatePropagation를 사용해서 방지되는 것은 버블링될 때 다음차례인 middle, outer 이벤트 리스너에만 적용된다.
+            // e.stopImmediatePropagation();
+        });
+
+        // ⚠️⚠️⚠️⚠️⚠️⚠️
+        // stopPropagation, stopImmediatePropagation 를 사용하는 것은 정말 위험하고 나쁘다.
+        // 다른 사람들이 등록한 이벤트 리스너를 개무시하고 내 것만 처리해버리게 되므로.
+
+        // 그럼 어떻게 해야될까?
+        // 이벤트 리스너의 콜백함수 안에서 event.target과 event.currentTarget이 일치하는지 여부를 판단해 처리하면 된다.
+        // if (e.target !== e.currentTarget) {
+        // return;
+        // }
+
+        // 버블링은 부모/자식 구조에서 동일한 이벤트만 버블링된다.
+    </script>
+</body>
+</html>

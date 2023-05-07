@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>6.4 우아한 이벤트 위임</title>
+    <style>
+        .selected {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+        <li>8</li>
+        <li>9</li>
+        <li>10</li>
+    </ul>
+
+    <script>
+        // 👎 Bad
+        // const lis = document.querySelectorAll('li');
+        // lis.forEach(li => {
+        //     li.addEventListener('click', () => {
+        //         li.classList.add('selected');
+        //     });
+        // });
+
+        // 🙌 Cooooooool
+        const ul = document.querySelector('ul');
+        ul.addEventListener('click', (e) => {
+            // e.target: 이벤트를 발생시킨 DOM 요소
+            // e.currentTarget: 이벤트 핸들러가 바인딩된 DOM 요소
+            console.log(e.target, e.currentTarget);
+
+            if (e.target.tagName == 'LI') {
+                e.target.classList.add('selected');
+            }
+        });
+
+        // 자식이 100개 1000개 있을 수도 있다. 그 개수만큼 addEventListener를 만드는 것 보다
+        // 하나의 부모에 등록하는 것이 좋다. (이벤트 위임을 사용하는 것이 좋다)
+
+    </script>
+</body>
+</html>

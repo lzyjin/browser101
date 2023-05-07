@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>6.3 브라우저를 취소하라! 유의할 점</title>
+    <style>
+        div {
+            width: 300px;
+            height: 300px;
+            background-color: yellow;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <input type="checkbox" name="" id="">
+    </div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+
+    <script>
+        document.addEventListener('wheel', (event) => {
+            console.log('scrolling');
+
+            // 콘솔에 에러메시지 출력됌:
+            // [Intervention] Unable to preventDefault inside passive event listener due to target being treated as passive. See <URL>
+            // 뜻: 브라우저는 wheel이벤트를 매우 빨리 처리해서
+            event.preventDefault();
+
+            // scrolling은 할일을 다 기다려주면 너무 늦어지므로, 빨리 뭔가 동작해야 하는 이벤트는 브라우저가 먼저 행동하고 있기 때문에
+            // 우리가 preventDefault해도 무시한다.
+            // event를 읽을 수만 있고, 기본값을 취소할 수는 없다.
+            // event가 passive하게 등록되는 것이다.
+
+            // 그럼 wheel 이벤트 리스너는 어떻게 취소하지?
+            // addEventListener()로 이벤트리스너를 등록할 때 passive 매개변수를 false로 설정하면 된다.
+            // 그러면 preventDefault()를 사용할 수 있다.
+            //  document.addEventListener('wheel', (event) => {}, {passive: false});
+            // https://developer.mozilla.org/ko/docs/Web/API/EventTarget/addEventListener
+
+            // ⚠️⚠️⚠️⚠️⚠️
+            // 하지만 기본적으로 passive가 true로 설정된 이벤트 리스너는 왠만하면
+            // preventDefault()하지 않는게 좋고, passive 값을 손대지 않는게 좋다.
+        });
+        // }, {passive: false,});
+
+        const checkbox = document.querySelector('input');
+        checkbox.addEventListener('click', (event) => {
+            // long
+            console.log('checked');
+
+            // 콘솔에 checked 라고 출력되지만 브라우저 화면상에 체크표시가 되지 않는다.
+            event.preventDefault();
+
+            // 브라우저는 input이 처리해야되는것을 다 하고(위의 long)나서 check표시를 한다.
+        });
+    </script>
+</body>
+</html>
