@@ -12,10 +12,25 @@
         <header class="header">Shopping List</header>
         <ul class="items"></ul>
         <footer class="footer">
+            <!--
             <input type="text" class="footer__input">
             <button class="footer__button">
                 <i class="fa-solid fa-plus"></i>
             </button>
+            -->
+
+            <!-- 👍form태그를 사용해서 개선 -->
+            <form action="" class="new-form">
+                <input type="text" class="footer__input">
+                <!--
+                    👍 button의 type을 submit을 명시적으로 작성해주는 것이 좋다.
+                    명시하지 않으면 form안에 있는 button은 type이 submit이다.
+                 -->
+                <button class="footer__button" type="submit">
+                <button class="footer__button">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </form>
         </footer>
     </section>
 </body>
