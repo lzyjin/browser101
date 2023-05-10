@@ -35,7 +35,18 @@ function print2(name, age) {
 
 
 
-
-function surprise(operator) {
-
+function divide(num1, num2) {
+    return num1 / num2;
 }
+function surprise(callback) {
+    const result = callback(2, 3); // callback(2, 3)는 add(2, 3)와 동일하다.
+    console.log(result);
+}
+// surprise(); // TypeError: callback is not a function
+// 인자를 넘기지 않아서 callback은 undefined이기 때문
+
+
+surprise(add); // 5
+// add라는 함수의 reference를 전달함
+
+surprise(divide); // 0.66666666
