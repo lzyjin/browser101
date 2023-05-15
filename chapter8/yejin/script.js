@@ -2,6 +2,7 @@ const game = document.querySelector('#game');
 const ground = document.querySelector('.ground');
 const time = document.querySelector('.time');
 const count = document.querySelector('.count');
+const modal = document.querySelector('.modal');
 let timeLimit = 10000;
 let numberOfCarrots = 0;
 // const isPlaying = false;
@@ -45,6 +46,26 @@ function setItem() {
 }
 
 
+// 모달 띄움
+function openModal(isWon) {
+    let msg = '';
+
+    if (isWon) {
+        msg = 'You Won 🎉';
+    } else {
+        msg = 'You Lose';
+    }
+
+    modal.querySelector('.result').textContent = msg;
+
+    modal.classList.add('on');
+}
+
+function closeModal() {
+    modal.classList.remove('on');
+}
+
+
 
 
 // 당근, 벌레 클릭 인식
@@ -55,25 +76,55 @@ game.addEventListener('click', (e) => {
     let timeout;
 
     if (target.classList.contains('btn-start') || target.classList.contains('btn-restart')) {
+        target.querySelector('i').className = 'fa-solid fa-stop';
+        closeModal();
         generatorItem();
         setItem();
 
-        // 타이머 10초에서 시작해서 1초씩 줄어듦
-        // 남은 초를 화면에 표시
-        // 10초가 되면 실패 처리와 동일하게 처리.
-
+        // 시도 1. setInterval과 setTimeout으로 타이머 만들기
         // interval = setInterval(() => {
         //     timeLimit = timeLimit - 1000;
         //     time.textContent = `00:${timeLimit / 1000}`;
         // }, 1000);
+        //
+        // timeout = setTimeout(() => {
+        //     // FIXME: 실패처리 (공통으로 빼기)
+        //     clearInterval(interval);
+        //     openModal(false);
+        // }, 10000);
 
-        // timeout = setTimeout(() => {}, 1000);
+
+        // 시도 2. Date 객체로 타이머 만들기
+        const dateTo = new Date();
+        let dateFrom = new Date();
+        dateFrom.setTime(dateFrom.getTime() + 10000);
+
+        console.log(dateFrom);
+        console.log(dateTo);
+
+        const distance = dateFrom - dateTo;
+
+        interval = setInterval(() => {
+            const distanceSeconds = distance / 1000;
+
+            console.log(distance)
+            console.log(distanceSeconds);
+
+            time.textContent = `00:${distanceSeconds < 10 ? '0' + distanceSeconds : distanceSeconds}`;
+
+            if (distance < 0) {
+                clearInterval(interval);
+            }
+
+        }, 1000);
+
     }
 
     if (target.classList.contains('bug')) {
-        alert('실패!');
-        // 1. 타이머 멈춤
-        // 2. 실패 팝업 띄우기
+        // FIXME: 실패처리 (공통으로 빼기)
+        clearInterval(interval);
+        clearTimeout(timeout);
+        openModal(false);
     }
 
     if (target.classList.contains('carrot')) {
@@ -83,6 +134,12 @@ game.addEventListener('click', (e) => {
 
         // count.textContent가 '10'이면
         // 타이머 멈추고, 성공 팝업 띄우기
+
+        if (numberOfCarrots === 10) {
+            clearInterval(interval);
+            clearTimeout(timeout);
+            openModal(true);
+        }
     }
 
 
