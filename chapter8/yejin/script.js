@@ -95,20 +95,13 @@ game.addEventListener('click', (e) => {
 
 
         // 시도 2. Date 객체로 타이머 만들기
-        const dateTo = new Date();
         let dateFrom = new Date();
         dateFrom.setTime(dateFrom.getTime() + 10000);
 
-        console.log(dateFrom);
-        console.log(dateTo);
-
-        const distance = dateFrom - dateTo;
-
         interval = setInterval(() => {
-            const distanceSeconds = distance / 1000;
-
-            console.log(distance)
-            console.log(distanceSeconds);
+            const today = new Date();
+            let distance = dateFrom.getTime() - today.getTime();
+            let distanceSeconds = Math.round(distance / 1000);
 
             time.textContent = `00:${distanceSeconds < 10 ? '0' + distanceSeconds : distanceSeconds}`;
 
@@ -122,8 +115,8 @@ game.addEventListener('click', (e) => {
 
     if (target.classList.contains('bug')) {
         // FIXME: 실패처리 (공통으로 빼기)
+        // FIXME: 왜 안멈추냐!!!!
         clearInterval(interval);
-        clearTimeout(timeout);
         openModal(false);
     }
 
@@ -136,8 +129,8 @@ game.addEventListener('click', (e) => {
         // 타이머 멈추고, 성공 팝업 띄우기
 
         if (numberOfCarrots === 10) {
+            // FIXME: 왜 안멈추냐!!!!
             clearInterval(interval);
-            clearTimeout(timeout);
             openModal(true);
         }
     }
