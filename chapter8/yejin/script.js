@@ -3,9 +3,27 @@ const ground = document.querySelector('.ground');
 const time = document.querySelector('.time');
 const count = document.querySelector('.count');
 const modal = document.querySelector('.modal');
-let timeLimit = 10000;
+const btnStart = document.querySelector('.btn-start');
 let numberOfCarrots = 0;
-// const isPlaying = false;
+let interval;
+
+
+// 계속 흘러나오고 있는 배경음
+let audioBg = new Audio('sound/bg.mp3');
+
+// 당근 클릭하면 나오는 효과음:
+let audioCarrot = new Audio('sound/carrot_pull.mp3');
+
+// 벌레 클릭하면 나오는 효과음
+let audioBug = new Audio('sound/bug_pull.mp3');
+
+// 게임 이겼을 때 나오는 효과음
+let audioWin = new Audio('sound/game_win.mp3');
+
+// 재시작버튼 클릭하면 나오는 효과음
+let audioAlert = new Audio('sound/alert.wav');
+
+
 
 
 // 무작위 위치에 놓음
@@ -49,20 +67,54 @@ function setItem() {
 // 모달 띄움
 function openModal(isWon) {
     let msg = '';
+    audioBg.pause();
+    // btnStart.style.display = 'none';
 
     if (isWon) {
         msg = 'You Won 🎉';
+        audioWin.play();
     } else {
         msg = 'You Lose';
     }
 
     modal.querySelector('.result').textContent = msg;
-
     modal.classList.add('on');
 }
 
+// 모달 없앰
 function closeModal() {
     modal.classList.remove('on');
+}
+
+// 게임 시작
+function startGame() {
+    audioBg.play();
+
+    btnStart.querySelector('i').className = 'fa-solid fa-stop';
+    numberOfCarrots = 0;
+    count.innerHTML = '0';
+    time.innerHTML = '00:10';
+
+    closeModal();
+    generatorItem();
+    setItem();
+
+    let dateFrom = new Date();
+    dateFrom.setTime(dateFrom.getTime() + 10000);
+
+    interval = setInterval(() => {
+        const today = new Date();
+        let distance = dateFrom.getTime() - today.getTime();
+        let distanceSeconds = Math.round(distance / 1000);
+
+        time.textContent = `00:${distanceSeconds < 10 ? '0' + distanceSeconds : distanceSeconds}`;
+
+        if (distance < 0) {
+            clearInterval(interval);
+            openModal(false);
+        }
+
+    }, 1000);
 }
 
 
@@ -72,71 +124,50 @@ function closeModal() {
 game.addEventListener('click', (e) => {
     const target = e.target;
 
-    let interval;
-    let timeout;
+    if (target.classList.contains('btn-start')) {
+        target.classList.toggle('is-playing');
 
-    if (target.classList.contains('btn-start') || target.classList.contains('btn-restart')) {
-        target.querySelector('i').className = 'fa-solid fa-stop';
-        closeModal();
-        generatorItem();
-        setItem();
-
-        // 시도 1. setInterval과 setTimeout으로 타이머 만들기
-        // interval = setInterval(() => {
-        //     timeLimit = timeLimit - 1000;
-        //     time.textContent = `00:${timeLimit / 1000}`;
-        // }, 1000);
-        //
-        // timeout = setTimeout(() => {
-        //     // FIXME: 실패처리 (공통으로 빼기)
-        //     clearInterval(interval);
-        //     openModal(false);
-        // }, 10000);
-
-
-        // 시도 2. Date 객체로 타이머 만들기
-        let dateFrom = new Date();
-        dateFrom.setTime(dateFrom.getTime() + 10000);
-
-        interval = setInterval(() => {
-            const today = new Date();
-            let distance = dateFrom.getTime() - today.getTime();
-            let distanceSeconds = Math.round(distance / 1000);
-
-            time.textContent = `00:${distanceSeconds < 10 ? '0' + distanceSeconds : distanceSeconds}`;
-
-            if (distance < 0) {
-                clearInterval(interval);
-            }
-
-        }, 1000);
+        if ( target.classList.contains('is-playing') ) {
+            target.querySelector('i').className = 'fa-solid fa-stop';
+            startGame();
+        } else {
+            btnStart.querySelector('i').className = 'fa-solid fa-play';
+            clearInterval(interval);
+            count.innerHTML = '0';
+            time.innerHTML = '00:10';
+            ground.innerHTML = '';
+            audioBg.load();
+        }
 
     }
 
+    if (target.classList.contains('btn-restart')) {
+        // btnStart.style.display = 'block';
+        btnStart.querySelector('i').className = 'fa-solid fa-play';
+        count.innerHTML = '0';
+        time.innerHTML = '00:10';
+        ground.innerHTML = '';
+        audioAlert.play();
+        closeModal();
+    }
+
     if (target.classList.contains('bug')) {
-        // FIXME: 실패처리 (공통으로 빼기)
-        // FIXME: 왜 안멈추냐!!!!
         clearInterval(interval);
         openModal(false);
+        audioBg.load();
+        audioBug.play();
     }
 
     if (target.classList.contains('carrot')) {
         target.remove();
         numberOfCarrots++;
-        count.textContent = numberOfCarrots;
-
-        // count.textContent가 '10'이면
-        // 타이머 멈추고, 성공 팝업 띄우기
+        count.innerHTML = numberOfCarrots;
+        audioCarrot.play();
 
         if (numberOfCarrots === 10) {
-            // FIXME: 왜 안멈추냐!!!!
             clearInterval(interval);
             openModal(true);
         }
     }
 
-
 });
-
-
-// 시작 버튼 클릭
