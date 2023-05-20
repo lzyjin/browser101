@@ -4,9 +4,10 @@ const time = document.querySelector('.time');
 const count = document.querySelector('.count');
 const modal = document.querySelector('.modal');
 const btnStart = document.querySelector('.btn-start');
+
 let numberOfCarrots = 0;
 let interval;
-
+let isPlaying = false;
 
 // 계속 흘러나오고 있는 배경음
 let audioBg = new Audio('sound/bg.mp3');
@@ -74,7 +75,7 @@ function openModal(isWon) {
         msg = 'You Won 🎉';
         audioWin.play();
     } else {
-        msg = 'You Lose';
+        msg = 'REPLAY?';
     }
 
     modal.querySelector('.result').textContent = msg;
@@ -125,18 +126,16 @@ game.addEventListener('click', (e) => {
     const target = e.target;
 
     if (target.classList.contains('btn-start')) {
-        target.classList.toggle('is-playing');
-
-        if ( target.classList.contains('is-playing') ) {
-            target.querySelector('i').className = 'fa-solid fa-stop';
-            startGame();
-        } else {
+        if (isPlaying) {
             btnStart.querySelector('i').className = 'fa-solid fa-play';
             clearInterval(interval);
-            count.innerHTML = '0';
-            time.innerHTML = '00:10';
-            ground.innerHTML = '';
-            audioBg.load();
+            audioBg.pause();
+            openModal(false);
+            isPlaying = !isPlaying;
+        } else {
+            target.querySelector('i').className = 'fa-solid fa-stop';
+            startGame();
+            isPlaying = !isPlaying;
         }
 
     }
@@ -149,6 +148,7 @@ game.addEventListener('click', (e) => {
         ground.innerHTML = '';
         audioAlert.play();
         closeModal();
+        isPlaying = false;
     }
 
     if (target.classList.contains('bug')) {
