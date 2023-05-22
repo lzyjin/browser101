@@ -28,11 +28,15 @@ let audioAlert = new Audio('sound/alert.wav');
 
 
 function initGame() {
+    closeModal();
     btnStart.querySelector('i').className = 'fa-solid fa-play';
     catchedCarrotCount = 0;
     resetCount();
     resetGround();
-    closeModal();
+
+    let minute = Math.floor(GAME_TIME_SECOND / 60);
+    let second = GAME_TIME_SECOND % 60;
+    time.textContent = `${minute}:${second}`;
 }
 
 function playGame() {
