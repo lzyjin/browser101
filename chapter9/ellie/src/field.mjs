@@ -1,6 +1,6 @@
-// popup.js처럼 field에 관한 코드들을 분리해보기!!
-
 'use strict';
+
+import * as sound from './sound.mjs';
 
 const carrotSound = new Audio('./sound/carrot_pull.mp3');
 const CARROT_SIZE = 80;
@@ -11,6 +11,22 @@ export default class Field {
         this.bugCount = bugCount;
         this.field = document.querySelector('.game__field');
         this.fieldRect = this.field.getBoundingClientRect();
+
+        // ⚠️ 함수를 인자로 전달할 때, 함수 안에 들어있는 정보인 클래스(this)가 전달되지 않아서 예상과 다르게 동작한다.
+        // this.field.addEventListener('click', this.onClick);
+
+        // 🙌 해결방법
+        // this 바인딩 (여기서는 this에 클래스를 바인딩)
+        // 방법 1
+        // this.onClick = this.onClick.bind(this);
+        // this.field.addEventListener('click', this.onClick);
+
+        // 방법 2
+        // 화살표 함수 사용
+        // this.field.addEventListener('click', event => this.onClick(event));
+
+        // 방법 3
+        // onClick 함수를 화살표 함수로 만든다. (엘리가 사용하는 방법)
         this.field.addEventListener('click', this.onClick);
     }
 
@@ -50,22 +66,29 @@ export default class Field {
         this.onItemClick = onItemClick;
     }
 
-    onClick(event) {
+    // onClick(event) {
+    //     const target = event.target;
+    //     if (target.matches('.carrot')) {
+    //         target.remove();
+    //         sound.playCarrot();
+    //         this.onItemClick && this.onItemClick('carrot');
+    //
+    //     } else if (target.matches('.bug')) {
+    //         this.onItemClick && this.onItemClick('bug');
+    //     }
+    // }
+
+    onClick = event => {
         const target = event.target;
         if (target.matches('.carrot')) {
             target.remove();
-            playSound(carrotSound);
+            sound.playCarrot();
             this.onItemClick && this.onItemClick('carrot');
 
         } else if (target.matches('.bug')) {
             this.onItemClick && this.onItemClick('bug');
         }
     }
-}
-
-function playSound (sound) {
-    sound.currentTime = 0;
-    sound.play();
 }
 
 function randomNumber (min, max) {
