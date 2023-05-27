@@ -3,18 +3,15 @@
 import Popup from './popup.mjs';
 import Field from './field.mjs';
 import * as sound from './sound.mjs';
+import Game from './game-yejin.mjs';
 
 const CARROT_COUNT = 10;
 const BUG_COUNT = 10;
 const GAME_DURATION_SEC = 5;
 
-const gameBtn = document.querySelector('.game__button');
-const gameTimer = document.querySelector('.game__timer');
-const gameScore = document.querySelector('.game__score');
-
 let started = false;
 let score = 0;
-let timer = undefined;
+
 
 // ⭐️ 변수명을 그냥 popup으로 하지 말고 무슨 역할을 하는지 알 수 있게 명명하기.
 const gameFinishBanner = new Popup();
@@ -34,7 +31,7 @@ function onItemClick (item) {
 
     if (item === 'carrot') {
         score++;
-        updateScoreBoard();
+        game.updateScoreBoard();
 
         if (score === CARROT_COUNT) {
             finishGame(true);
@@ -45,114 +42,25 @@ function onItemClick (item) {
     }
 }
 
-
-
+const game = new Game(CARROT_COUNT, started, GAME_DURATION_SEC);
 
 function startGame () {
-    started = true;
-    initGame();
-    showStopButton();
-    showTimerAndScore();
-    startGameTimer();
-    sound.playBackground();
+    game.startGame();
 }
 
 function stopGame () {
-    started = false;
-    stopGameTimer();
-    hideGameButton();
     gameFinishBanner.showWithText('REPLAY?');
-    sound.playAlert();
-    sound.stopBackground();
+    game.startGame();
 }
 
 function finishGame (win) {
-    started = false;
-    hideGameButton();
-    stopGameTimer();
-
-    if (win) {
-        sound.playWin();
-    } else {
-        sound.playBug();
-    }
-
-    sound.stopBackground();
     gameFinishBanner.showWithText(win ? 'YOU WON 🎉' : 'YOU LOST 👎');
+    game.finishGame(win);
 }
 
 
 function initGame () {
     score = 0;
-    gameScore.innerText = CARROT_COUNT;
     gameField.initGame();
+    game.initGame();
 }
-
-
-
-function showStopButton () {
-    const icon = gameBtn.querySelector('.fas');
-
-    icon.classList.add('fa-stop');
-    icon.classList.remove('fa-play');
-
-    gameBtn.style.visibility = 'visible';
-}
-
-function hideGameButton () {
-    gameBtn.style.visibility = 'hidden';
-}
-
-function showTimerAndScore () {
-    gameTimer.style.visibility = 'visible';
-    gameScore.style.visibility = 'visible';
-}
-
-// ⭐️ 시간에 따라 분과 초 나타내기
-function updateTimerText (time) {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-
-    gameTimer.innerText = `${minutes}:${seconds}`;
-}
-
-function startGameTimer () {
-    let remainingTimeSec = GAME_DURATION_SEC;
-    updateTimerText(remainingTimeSec);
-
-    timer = setInterval(() => {
-        if (remainingTimeSec <= 0) {
-            clearInterval(timer);
-            finishGame(score === CARROT_COUNT);
-            return;
-        }
-
-        updateTimerText(--remainingTimeSec);
-    }, 1000);
-}
-
-function stopGameTimer () {
-    clearInterval(timer);
-}
-
-function updateScoreBoard () {
-    gameScore.innerText = CARROT_COUNT - score;
-}
-
-
-
-
-gameBtn.addEventListener('click', () => {
-    if (started) {
-        stopGame();
-    } else {
-        startGame();
-    }
-});
-
-
-
-
-
-// 엘리 솔루션 따라 치면서 느낀점
-// 함수를 기능 하나씩마다 다 따로 만드는구나...
