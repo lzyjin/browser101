@@ -1,158 +1,64 @@
 'use strict';
 
+// 역할:
+// game을 만들고, banner를 연결
+
 import Popup from './popup.mjs';
-import Field from './field.mjs';
-import * as sound from './sound.mjs';
-
-const CARROT_COUNT = 10;
-const BUG_COUNT = 10;
-const GAME_DURATION_SEC = 5;
-
-const gameBtn = document.querySelector('.game__button');
-const gameTimer = document.querySelector('.game__timer');
-const gameScore = document.querySelector('.game__score');
-
-let started = false;
-let score = 0;
-let timer = undefined;
-
-// ⭐️ 변수명을 그냥 popup으로 하지 말고 무슨 역할을 하는지 알 수 있게 명명하기.
+import * as sound from "./sound.mjs";
+// import Game from './game.mjs';
+import { GameBuilder, Reason } from './game.mjs';
 const gameFinishBanner = new Popup();
 
+// const game = new Game(10, 10, 10);
+
+// Builder Pattern
+// 생성자 인자의 개수가 3개 이상이면 Builder Pattern을 사용해서 실수를 줄이자.
+// const game = new GameBuilder()
+export const game = new GameBuilder()
+    .withGameDuration(10)
+    .withCarrotCount(7)
+    .withBugCount(5)
+    .build();
+
+game.setGameStopListener(reason => {
+    let message;
+
+    // switch (reason) {
+    //     case 'cancel':
+    //         message = 'REPLAY?';
+    //         break;
+    //     case 'win':
+    //         message = 'YOU WON 🎉';
+    //         break;
+    //     case 'lose':
+    //         message = 'YOU LOST 👎';
+    //         break;
+    //     default:
+    //         throw new Error('not valid reason');
+    // }
+
+    // Reason을 객체 동결 시켜서 reason이 string이 아니도록 리팩토링함.
+    // Reason 안에는 프로퍼티가 3개밖에 없기 때문에 실수할 가능성이 줄어듦.
+    switch (reason) {
+        case Reason.cancel:
+            message = 'REPLAY?';
+            sound.playAlert();
+            break;
+        case Reason.win:
+            message = 'YOU WON 🎉';
+            sound.playWin();
+            break;
+        case Reason.lose:
+            message = 'YOU LOST 👎';
+            sound.playBug();
+            break;
+        default:
+            throw new Error('not valid reason');
+    }
+
+    gameFinishBanner.showWithText(message);
+});
+
 gameFinishBanner.setClickListener(() => {
-    startGame();
+    game.start();
 });
-
-const gameField = new Field(CARROT_COUNT, BUG_COUNT);
-gameField.setClickListener(onItemClick);
-
-function onItemClick (item) {
-    // ⭐️　함수 안에서 조건에 맞지 않을때 빨리 함수를 종료하는 것이 중요하다
-    if (!started) {
-        return;
-    }
-
-    if (item === 'carrot') {
-        score++;
-        updateScoreBoard();
-
-        if (score === CARROT_COUNT) {
-            finishGame(true);
-        }
-
-    } else if (item === 'bug') {
-        finishGame(false);
-    }
-}
-
-
-
-
-function startGame () {
-    started = true;
-    initGame();
-    showStopButton();
-    showTimerAndScore();
-    startGameTimer();
-    sound.playBackground();
-}
-
-function stopGame () {
-    started = false;
-    stopGameTimer();
-    hideGameButton();
-    gameFinishBanner.showWithText('REPLAY?');
-    sound.playAlert();
-    sound.stopBackground();
-}
-
-function finishGame (win) {
-    started = false;
-    hideGameButton();
-    stopGameTimer();
-
-    if (win) {
-        sound.playWin();
-    } else {
-        sound.playBug();
-    }
-
-    sound.stopBackground();
-    gameFinishBanner.showWithText(win ? 'YOU WON 🎉' : 'YOU LOST 👎');
-}
-
-
-function initGame () {
-    score = 0;
-    gameScore.innerText = CARROT_COUNT;
-    gameField.initGame();
-}
-
-
-
-function showStopButton () {
-    const icon = gameBtn.querySelector('.fas');
-
-    icon.classList.add('fa-stop');
-    icon.classList.remove('fa-play');
-
-    gameBtn.style.visibility = 'visible';
-}
-
-function hideGameButton () {
-    gameBtn.style.visibility = 'hidden';
-}
-
-function showTimerAndScore () {
-    gameTimer.style.visibility = 'visible';
-    gameScore.style.visibility = 'visible';
-}
-
-// ⭐️ 시간에 따라 분과 초 나타내기
-function updateTimerText (time) {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-
-    gameTimer.innerText = `${minutes}:${seconds}`;
-}
-
-function startGameTimer () {
-    let remainingTimeSec = GAME_DURATION_SEC;
-    updateTimerText(remainingTimeSec);
-
-    timer = setInterval(() => {
-        if (remainingTimeSec <= 0) {
-            clearInterval(timer);
-            finishGame(score === CARROT_COUNT);
-            return;
-        }
-
-        updateTimerText(--remainingTimeSec);
-    }, 1000);
-}
-
-function stopGameTimer () {
-    clearInterval(timer);
-}
-
-function updateScoreBoard () {
-    gameScore.innerText = CARROT_COUNT - score;
-}
-
-
-
-
-gameBtn.addEventListener('click', () => {
-    if (started) {
-        stopGame();
-    } else {
-        startGame();
-    }
-});
-
-
-
-
-
-// 엘리 솔루션 따라 치면서 느낀점
-// 함수를 기능 하나씩마다 다 따로 만드는구나...

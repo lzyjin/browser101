@@ -1,5 +1,8 @@
 'use strict';
 
+// 역할
+// application에서 사용하는 sound를 모아 놓음
+
 const carrotSound = new Audio('./sound/carrot_pull.mp3');
 const alertSound = new Audio('./sound/alert.wav');
 const bgSound = new Audio('./sound/bg.mp3');

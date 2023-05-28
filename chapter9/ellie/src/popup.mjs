@@ -1,5 +1,8 @@
 'use strict';
 
+// 역할:
+// popup에 관련된 코드만 모아 놓음
+
 export default class Popup {
     constructor() {
         this.popUp = document.querySelector('.pop-up');
@@ -14,7 +17,6 @@ export default class Popup {
     }
 
     setClickListener(onClick) {
-        // 이벤트 핸들러 프로퍼티 방식으로 이벤트 등록
         this.onClick = onClick;
     }
 
