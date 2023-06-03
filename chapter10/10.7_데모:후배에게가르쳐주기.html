@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Event loop 예제</title>
+</head>
+<body>
+    <button>Let's dance 💃🏻</button>
+    <div class="box"></div>
+
+    <script>
+        const button = document.querySelector('button');
+        const box = document.querySelector('.box');
+        button.addEventListener('click', () => {
+            box.style.transition = 'transform 1s ease-in';
+            box.style.transform = 'translateX(800px)';
+            box.style.transform = 'translateX(500px)';
+        });
+
+        // 후배가 코드를 이렇게 작성하고
+        // '선배님 버튼을 클릭하면 박스가 800px까지 갔다가 다시 500px으로 와야하는데 정상적으로 잘 안돼요.
+        // 버튼을 클릭하면 가긴 가는데 딱 500px까지만 가고, 800까지 갔다가 500으로 돌아오는게 잘 안돼요.'
+        // 라고 나한테 물어보면 왜 정상적으로 되지 않는지 어떻게 설명해야할까?
+
+        // 콜백 함수 안에서 얼마나 많이 translate을 다른 방향으로 했든지 간에
+        // 결국 rendering이 발생할 때는 최종적으로 transform에 할당한 값만 적용이 된다.
+        // 콜 스택에 들어간 콜백함수 안에서 얼마나 많이 transform 의 값을 업데이트 했든지 상관 없이 이 모든 코드가 다 끝날때까지 이벤트 루프가 기다렸다가
+        // 즉, 함수가 수행되는 동안에는 변경된 사항이 브라우저에 보여지지 않는다.
+        // 우리가 얼마나 애니메이션을 지정하든, 얼마나 x와 y를 움직이든지 간에 브라우저에는 업데이트가 되지 않는다.
+        // 왜냐면 이벤트 루프가 콜 스택이 끝날때까지 여기서 멈춰있기 때문에 여기 있는 동안엔 rendering으로 갈 수 없다.
+        // 콜백 함수 안에서 값이 쭉 다 적용될 때까지 기다렸다가(브라우저에 업데이트 되지 않았다가) 콜백 함수가 끝나고나서야 이벤트 루프는 rendering으로 와서
+        // 최종적으로 업데이트 된 애들 기준으로 render tree를 만들고, layout이 발생하고, paint를 통해 브라우저에 표시된다.
+
+        // 콜백 안에서 아무리 dom 요소를 조작해서 업데이트 한다고 해서 브라우저에는 변경된 사항이 바로바로 보여지지 않는다.
+        // 콜백이 끝난 다음에 그때서야 브라우저에 업데이트된 사항이 나타난다.
+    </script>
+</body>
+</html>

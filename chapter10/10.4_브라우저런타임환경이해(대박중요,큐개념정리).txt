@@ -31,7 +31,7 @@ second 함수 안에서 setTimeout을 호출했다.
 setTimeout에 3초 후 콘솔에 hello를 호출하는 콜백함수를 등록했다.
 setTimeout을 호출하는 순간 콜 스택에서 setTimeout은 제거되고 Web API는 타이머를 실행한다.
 타이머가 실행되는 와중에도, 즉 타이머와 자바스크립트 엔진은 병렬적으로 실행되고 있다가 지정된 시간이 되면
-Web APIs는 Task Queue에 timeout callback을 집어넣는다.
+Web APIs는 Task Queue(태스트 큐)에 timeout callback을 집어넣는다.
 
 Queue?
 FIFO (First In First Out) 처음에 들어온 애가 제일 처음에 나간다.
