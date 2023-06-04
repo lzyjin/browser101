@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        button {
+            font-size: 60px;
+        }
+        
+        button:hover {
+            background-color: pink;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button>While(true)</button>
+
+    <script>
+        // 이벤트 루프는 콜 스택에 있는 함수가 끝날때까지는 절대 렌더링 단계까지 올 수 없다
+        // 는 것을 증명할 예제를 보자.
+
+        const button = document.querySelector('button');
+        button.addEventListener('click', () => {
+            while (true) {
+                // repeat 😱
+            }
+        });
+
+        // 버튼을 클릭하면 우리가 등록한 콜백함수가 콜 스택으로 가서 무한으로 실행되고있다.
+        // 그래서 콜 스택이 영원히 끝나지 않기 때문에 브라우저는 아무 반응이 없다. (이벤트 루프가 콜스택에서 멈춰있어서 렌더링 할 수 없다)
+        // 이 상태에서 버튼에 마우스를 가져다 대도 버튼의 배경색은 계속 핑크이고 커서가 포인터다.
+
+        // 그리고 브라우저에서
+        // "응답 없는 페이지. 페이지가 응답할 때까지 기다리거나 페이지를 종료할 수 있습니다." 라는 알림창이 뜬다.
+
+        // 따라서 결론은
+        // 콜 스택에 등록하는 함수를 작성할 때 오랜 시간동안 일하는 것은 좋지 않다.
+        // 왜냐하면 이벤트 루프가 여기 오랫동안 머물러 있는 동안 브라우저는 업데이트되지 않고, 사용자의 클릭 처리나 이벤트 처리도 발생하지 않기 때문에
+        // 최대한 콜백은 간단한 처리만 작성하는 것이 좋고, loop나 while이나 for, 끝나지 않는 재귀함수 같은 것들은 조심해서 사용하는 것이 좋다.
+    </script>
+</body>
+</html>
