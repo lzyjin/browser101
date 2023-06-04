@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button>RequestAnimationFrame</button>
+
+    <script>
+        const button = document.querySelector('button');
+        button.addEventListener('click', () => {
+            requestAnimationFrame(() => {
+                document.body.style.backgroundColor = 'beige';
+            });
+            requestAnimationFrame(() => {
+                document.body.style.backgroundColor = 'orange';
+            });
+            requestAnimationFrame(() => {
+                document.body.style.backgroundColor = 'red';
+            });
+
+            // setTimeout(() => {
+            //
+            // }, 0);
+        });
+
+        // 버튼을 클릭하면 어떤일이 발생할까?
+        // 문서의 배경색이 빨강으로 바뀐다.
+
+        // 1) Web APIs에 button의 클릭 이벤트 리스너가 등록되었고,
+        // 2) 버튼에 클릭 이벤트가 발생하면 Web APIs는 이벤트 리스너의 콜백 함수를 태스크 큐에 등록한다.
+        // 3) 이벤트 루프가 돌다가 태스크 큐에 있는 아이템을 콜 스택으로 가져온다.
+        // 4) 콜 스택에서 이벤트 리스너의 콜백 함수가 수행된다.
+        // 5) 콜백 안에서는 총 3가지 일이 있는데, 배경색을 베이지로 하는 requestAnimationFrame, 배경 색을 오렌지로 하는 requestAnimationFrame, 배경 색을 빨강으로 하는 requestAnimationFrame
+        // 6) 이렇게 requestAnimationFrame라는 Web APIs를 호출하게 되면 RequestAnimationFrame 큐에 콜백함수를 등록한다.
+        // 7) 두번째 requestAnimationFrame를 호출하면 그의 콜백함수도 RequestAnimationFrame 큐에 등록, 세번째도 마찬가지다.
+        // 8) 그렇게 RequestAnimationFrame 큐에 3개의 콜백함수가 들어간다.
+        // ----------------
+        // | 베이지, 오렌지, 레드
+        // ----------------
+        // 방향 : <--  First In First Out
+        // 9) 이렇게 requestAnimationFrame 큐에 콜백함수를 등록하고, 콜 스택에서 클릭 이벤트리스너의 콜백이 끝나면 이벤트 루프가 순회를 재개하며
+        // 10) 브라우저에 업데이트할 시간이 되었다고 render sequence에 진입한다.
+        // 11) requestAnimationFrame 큐에 아이템이 있으면 베이지 -> 오렌지 -> 레드 이렇게 적용시키고, 결국 레드가 적용된 다음에 render tree를 생성하고, layout, paint가 된다.
+        // 12) requestAnimationFrame 큐에 아무리 backgroundColor 색상을 바꾸는 콜백이 많이 있다고 하더라도 마지막에 색상을 바꾼 red가 이겨서, 브라우저에 표시가 완료된 다음에
+        // 13) 다시 이벤트 루프가 순회한다.
+
+        // requestAnimationFrame은 굉장히 많이 사용한다.
+        // 이벤트 리스너의 콜백이 수행될 때는 변경하지 않고, 나중에 브라우저가 화면을 업데이트 하기 전에 우리가 등록한 변경사항을 적용한다.
+        // 클릭이 발생한 시점에는 변경되지 않아도 되는데 나중에 브라우저가 업데이트 되기 전에 이 코드를 수행해줘. 라고 원할 때 사용한다.
+
+        // 그리고 이벤트 리스너의 콜백 함수 안에 다음과 같이 setTimeout을 사용하는 테크닉도 많이 사용된다.
+        // 지금 수행되고 있는, 즉 콜 스택 안에서 콜백함수의 코드블럭이 수행되는 이 순간 말고, 이게 끝나면 이벤트 루프가 한바퀴 돌 때 그때 이 코드블럭을 수행해달라고 말하고 싶을때 사용한다.
+        // 이렇게 내가 무언가를 변경하고 나서 다음 차례 때(다음 이벤트 루프가 동작할 때) 내 것을 수행해달라고 원할 때 사용.
+        // setTimeout(() => {
+        //
+        // }, 0);
+
+        // 클릭이 발생하면 콜 스택에서 콜백 함수가 수행되다가, 지금 말고 조금 이따, 이벤트 루프가 한 바퀴 돌때 그때 실행하고 싶으면 setTimeout(() => {}, 0); 를 이용하게 되면
+        // Web APIs한테 0ms 후에, 그러니까 지금 당장 이 콜백을 태스크 큐에 넣어줘
+        // 0ms 후에 Web APIs는 태스크 큐에 콜백함수를 등록한다.
+        // 그리고 콜 스택에서 함수가 끝나서 텅텅 비어지면 태스크 큐에 있는 setTimeout의 콜백을 가져와서 수행하게 된다.
+    </script>
+</body>
+</html>

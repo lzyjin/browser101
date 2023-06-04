@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        button {
+            font-size: 60px;
+        }
+
+        button:hover {
+            background-color: pink;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button>Continue with promise</button>
+
+    <script>
+        function handleClick() {
+            console.log('handleClick');
+            Promise.resolve(0)
+                .then(() => {
+                    console.log('then');
+                    handleClick();
+                });
+        }
+
+        const button = document.querySelector('button');
+        button.addEventListener('click', () => {
+            handleClick();
+        });
+
+        // 버튼을 클릭하면 로그가 무한으로 출력됌.
+
+        // 1) 버튼을 클릭하면 addEventListener에 등록한 콜백 함수를 Web APIs가 태스크 큐에 보내고
+        // 2) 콜백 함수는 이벤트 루프에 의해 콜 스택으로 옮겨진다.
+        // 3) 콜 스택에서 함수가 수행되며 프로미스를 만들고, 프로미스의 then도 등록된다.
+        // 4) 프로미스의 then은 나중에 프로미스가 완료되면 마이크로 태스크 큐에 들어온다.
+        // 5) 이벤트 루프가 빙글빙글 돌다가 마이크로 태스크 큐에 함수가 있으면 여기 머무른다.
+        // 6) 그리고 이벤트 루프가 함수를 콜 스택으로 가져와서 함수를 수행하다 중간에 또 다시 then이라는 콜백이 들어가게 되고, 마이크로태스크 큐에 추가한다.
+        // 7) 이벤트 루프가 마이크로 태스크 큐에 머물러 있는 동안 마이크로 태스크 큐에 추가된 함수가 끝나기 전에 새로운 then이 마이크로 태스크 큐에 추가되었다.
+        // 8) 새로 들어오는 함수까지 처리하다가 마이크로 태스크 큐가 텅 빌 때까지 기다렸다가 큐에 함수가 하나도 없을 때 이벤트 루프는 순회를 재개한다.
+
+        // 프로미스의 then 안에서 또다른 then을 호출하고, 호출하고, 호출하고 ... 반복하면 브라우저는 반응하지않는 문제가 발생할 수 있다.
+        // 태스크 큐는 이벤트 루프가 함수를 콜 스택에 하나씩 옮겨놓고 다시 빙글빙글 도는 반면,
+        // 마이크로 태스크 큐는 큐에 들어있는 모든 함수 뿐만 아니라, 머물러 있는 동안 새로 추가되는 함수들까지도 다 실행될 때까지 기다리고 나서 이벤트 루프가 돌기 시작한다.
+    </script>
+</body>
+</html>
